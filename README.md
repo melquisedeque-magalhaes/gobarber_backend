@@ -1,6 +1,6 @@
 
 <h1 align="center">
-  <img src="./src/assets/logo.svg" width="500px"/>
+  <img src="./assets/logo.svg" width="500px"/>
 </h1>
 
 <h2 align="center"> Aplicação para gerenciamento de barbearias :haircut_man: </h2>
