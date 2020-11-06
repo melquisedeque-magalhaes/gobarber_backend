@@ -1,7 +1,8 @@
-import { request, response, Router } from 'express'
+import { Router } from 'express'
 import CreateUserService from '../services/CreateUserService'
 import { getRepository } from 'typeorm'
 import User from '../models/Users'
+import ensureAuthenticated from '../middlewares/ensureAuthenticated'
 
 const userRouter = Router()
 
@@ -36,4 +37,7 @@ userRouter.post('/', async (request, response) => {
     }
 })
 
+userRouter.patch('/avatar', ensureAuthenticated, async (request, response) => {
+    response.json({ ok: true })
+})
 export default userRouter
