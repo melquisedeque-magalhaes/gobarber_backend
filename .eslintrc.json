@@ -30,7 +30,10 @@
               "ts": "never"
             }
           ],
-          "prettier/prettier": "error"
+          "prettier/prettier": "error",
+          "camelcase": "off",
+          "class-methods-use-this": "off",
+          "consistent-return":"off"
     },
     "settings": {
         "import/resolver": {
