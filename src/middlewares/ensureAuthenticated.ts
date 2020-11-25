@@ -1,6 +1,8 @@
-import { Request, Response, NextFunction } from 'express'
-import { verify } from 'jsonwebtoken'
-import AuthConfig from '../config/AuthConfig'
+import { Request, Response, NextFunction } from 'express';
+import { verify } from 'jsonwebtoken';
+import AuthConfig from '../config/AuthConfig';
+
+import AppError from '../errors/AppError';
 
 interface TokenPayLoad {
     iat: number;
@@ -9,29 +11,27 @@ interface TokenPayLoad {
 }
 
 export default function ensureAuthenticated(
-    request:Request,
-    response:Response,
-    next:NextFunction): void {
+    request: Request,
+    response: Response,
+    next: NextFunction,
+): void {
+    const authHeader = request.headers.authorization;
 
-        const authHeader = request.headers.authorization;
+    if (!authHeader) throw new AppError('JWT Token is missing', 401);
 
-        if(!authHeader)
-            throw new Error("JWT Token is missing");
+    const [, token] = authHeader.split(' ');
 
-        const [, token ] = authHeader.split(' ')
+    try {
+        const decoded = verify(token, AuthConfig.jwt.secret);
 
-        try{
-            const decoded = verify(token, AuthConfig.jwt.secret)
+        const { sub } = decoded as TokenPayLoad;
 
-            const { sub } = decoded as TokenPayLoad
+        request.user = {
+            id: sub,
+        };
 
-            request.user = {
-                id: sub
-            }
-
-            return next()
-        }catch {
-            throw new Error("Invalid JWT token");
-
-        }
+        return next();
+    } catch {
+        throw new AppError('Invalid JWT token', 401);
+    }
 }
